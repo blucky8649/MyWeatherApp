@@ -2,8 +2,12 @@ package com.example.myweatherapp.di
 
 import android.app.Application
 import androidx.room.Room
+import com.example.myweatherapp.data.WeatherRepository
+import com.example.myweatherapp.data.repository.WeatherRepositoryImpl
 import com.example.myweatherapp.data.source.remote.WeatherApi
 import com.example.myweatherapp.data.source.local.WeatherDatabase
+import com.example.myweatherapp.data.source.local.WeatherLocalDataSource
+import com.example.myweatherapp.data.source.remote.WeatherRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,12 +36,23 @@ object AppModule {
             .build()
             .create(WeatherApi::class.java)
     }
+
     @Provides
     @Singleton
     fun provideWeatherDatabase(app: Application): WeatherDatabase =
         Room.databaseBuilder(
             app,
             WeatherDatabase::class.java,
-            "weather_db.db"
+            "weatherInfo_db.db"
         ).build()
+
+    @Provides
+    @Singleton
+    fun provideWeatherRepository(
+        db: WeatherDatabase,
+        api: WeatherApi
+    ): WeatherRepository = WeatherRepositoryImpl(
+        weatherLocalDataSource = WeatherLocalDataSource(db),
+        weatherRemoteDataSource = WeatherRemoteDataSource(api)
+    )
 }

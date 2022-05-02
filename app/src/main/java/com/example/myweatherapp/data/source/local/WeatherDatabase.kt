@@ -2,12 +2,15 @@ package com.example.myweatherapp.data.source.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.myweatherapp.model.WeatherItem
+import androidx.room.TypeConverters
+import com.example.myweatherapp.model.WeatherLocal
+import com.example.myweatherapp.model.entity.WeatherEntity
 
 @Database(
-    entities = [WeatherItem::class],
-    version = 1
+    entities = [WeatherEntity::class],
+    version = 2
 )
+@TypeConverters(WeatherConverters::class)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDao
 }
