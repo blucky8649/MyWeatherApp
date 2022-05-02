@@ -81,10 +81,7 @@ class WeatherViewHolder(val binding: ItemWeatherInfoBinding) :
         val tomorrowInfo = item.weatherInfos.filter {
             it.applicable_date == getTomorrow()
         }[0]
-        Log.d(
-            "Lee",
-            "today : ${todayInfo.applicable_date}, tomorrow: ${tomorrowInfo.applicable_date}"
-        )
+
         binding.apply {
             tvLocalTitle.text = item.localName
 

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweatherapp.adapter.WeatherListAdapter
@@ -30,7 +31,14 @@ class WeatherActivity : AppCompatActivity() {
             viewModel.state.collectLatest { result ->
                 when(result) {
                     is Resource.Success -> {
+                        binding.progressBar.isVisible = false
                         weatherAdapter.submitList(result.data?.toList())
+                    }
+                    is Resource.Loading -> {
+                        binding.progressBar.isVisible = true
+                    }
+                    is Resource.Error -> {
+                        binding.progressBar.isVisible = false
                     }
                 }
             }
