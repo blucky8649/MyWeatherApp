@@ -61,14 +61,22 @@ class WeatherListAdapter : ListAdapter<WeatherEntity, RecyclerView.ViewHolder>(d
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
             is WeatherViewHolder -> holder.bind(getItem(position))
-            else -> {}
+            else -> (holder as WeatherTitleViewHolder).bind(getItem(position))
+
         }
     }
 }
 
 class WeatherTitleViewHolder(val binding: ItemTitleBinding) :
     RecyclerView.ViewHolder(binding.root) {
-
+    fun bind(item: WeatherEntity) {
+        binding.apply {
+            val todayInfo = item.weatherInfos.filter {
+                it.applicable_date == getToday()
+            }[0]
+            tvCurrentDate.text = "(${todayInfo.applicable_date})"
+        }
+    }
 }
 
 class WeatherViewHolder(val binding: ItemWeatherInfoBinding) :

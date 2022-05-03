@@ -26,7 +26,11 @@ class WeatherActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupRecyclerView()
+        setupSwipeRefreshLayout()
+        observeWeatherState()
 
+    }
+    fun observeWeatherState() {
         lifecycleScope.launch {
             viewModel.state.collectLatest { result ->
                 when(result) {
@@ -41,6 +45,14 @@ class WeatherActivity : AppCompatActivity() {
                         binding.progressBar.isVisible = false
                     }
                 }
+            }
+        }
+    }
+    fun setupSwipeRefreshLayout() {
+        binding.swipeRefreshLayout.apply {
+            setOnRefreshListener {
+                viewModel.observeWeather(fetchFromRemote = true)
+                isRefreshing = false
             }
         }
     }

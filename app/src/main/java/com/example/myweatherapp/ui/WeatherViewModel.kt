@@ -24,11 +24,11 @@ class WeatherViewModel @Inject constructor(
     val state get() = _state
 
     init {
-        observeWeather("se", false)
+        observeWeather(fetchFromRemote = false)
     }
 
     fun observeWeather(
-        query: String,
+        query: String = "se",
         fetchFromRemote: Boolean
     ) = viewModelScope.launch {
         repository.observeWeatherListings(query, fetchFromRemote).collectLatest { result ->

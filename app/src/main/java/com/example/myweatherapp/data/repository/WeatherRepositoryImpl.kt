@@ -32,38 +32,35 @@ class WeatherRepositoryImpl(
             }
 
             val remoteDataResponse = weatherRemoteDataSource.getWeatherLocal(query)
-            val time = measureTimeMillis {
-                if (remoteDataResponse.isSuccessful) {
-                    remoteDataResponse.body()?.let { listings ->
-                        weatherLocalDataSource.clear()
-                        val newList = listings.map { weatherLocal ->
-                            CoroutineScope(Dispatchers.IO).async {
-                                WeatherEntity(
-                                    woeid = weatherLocal.woeid,
-                                    localName = weatherLocal.title,
-                                    weatherInfos = weatherRemoteDataSource // 네트워크 요청
-                                        .getWeatherDetail(weatherLocal.woeid)
-                                        .consolidated_weather
-                                )
-                            }
-
-                        }.awaitAll()
-                        weatherLocalDataSource.insert(newList)
-                        val localData =
-                            CoroutineScope(Dispatchers.IO)
-                                .async { weatherLocalDataSource.getWeather() }
-                                .await()
-                        emit(
-                            Resource.Success(
-                                localData
+            if (remoteDataResponse.isSuccessful) {
+                remoteDataResponse.body()?.let { listings ->
+                    weatherLocalDataSource.clear()
+                    val newList = listings.map { weatherLocal ->
+                        CoroutineScope(Dispatchers.IO).async {
+                            WeatherEntity(
+                                woeid = weatherLocal.woeid,
+                                localName = weatherLocal.title,
+                                weatherInfos = weatherRemoteDataSource // 네트워크 요청
+                                    .getWeatherDetail(weatherLocal.woeid)
+                                    .consolidated_weather
                             )
+                        }
+
+                    }.awaitAll()
+                    weatherLocalDataSource.insert(newList)
+                    val localData =
+                        CoroutineScope(Dispatchers.IO)
+                            .async { weatherLocalDataSource.getWeather() }
+                            .await()
+                    emit(
+                        Resource.Success(
+                            localData
                         )
-                    }
-                } else {
-                    emit(Resource.Error("Couldn't load data from remote"))
+                    )
                 }
+            } else {
+                emit(Resource.Error("Couldn't load data from remote"))
             }
-            Log.d("TimeCoroutines", "took $time ms.")
         }
     }
 }
