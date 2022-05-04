@@ -26,7 +26,6 @@ import org.mockito.*
 import org.mockito.ArgumentMatchers.*
 import retrofit2.Response
 
-@RunWith(JUnit4::class)
 class WeatherRepositoryImplTest {
     val mockQuery = ""
 
@@ -110,7 +109,7 @@ class WeatherRepositoryImplTest {
     fun emptyLocalData_And_DisableFetchFromRemoteTest() = runBlocking {
         // 로컬데이터가 비어있는 상태에서 fetchFromRemote를 false로 하면 리모트에서 데이터를 불러온다.
         localDbResult.clear()
-        val fakeFlow = repository.observeWeatherListings(mockQuery, true)
+        val fakeFlow = repository.observeWeatherListings(mockQuery, false)
         Truth.assertThat(weatherInfoListFromRemote).isEqualTo(fakeFlow.last().data)
     }
 

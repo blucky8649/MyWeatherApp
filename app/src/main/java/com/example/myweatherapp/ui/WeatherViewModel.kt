@@ -32,7 +32,6 @@ class WeatherViewModel @Inject constructor(
         fetchFromRemote: Boolean
     ) = viewModelScope.launch {
         repository.observeWeatherListings(query, fetchFromRemote).collectLatest { result ->
-            Log.d("Lee", result.data.toString())
             _state.emit(result)
         }
     }
