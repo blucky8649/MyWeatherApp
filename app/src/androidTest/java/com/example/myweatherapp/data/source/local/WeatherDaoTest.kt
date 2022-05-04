@@ -45,7 +45,11 @@ class WeatherDaoTest {
     }
 
     @Test
-    fun saveWeatherTest() = runBlocking {
+    fun insertWeatherMultipleTimesTest() = runBlocking {
+        weatherDao.insertAll(weatherInfoList)
+        weatherDao.insertAll(weatherInfoList)
+        weatherDao.insertAll(weatherInfoList)
+        weatherDao.insertAll(weatherInfoList)
         weatherDao.insertAll(weatherInfoList)
         val weatherInfos = weatherDao.getAll()
         Truth.assertThat(weatherInfos).isEqualTo(weatherInfoList)

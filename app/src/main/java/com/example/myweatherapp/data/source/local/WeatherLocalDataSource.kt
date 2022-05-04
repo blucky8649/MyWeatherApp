@@ -5,16 +5,16 @@ import com.example.myweatherapp.model.entity.WeatherEntity
 
 class WeatherLocalDataSource(
     private val db: WeatherDatabase
-) {
-    fun getWeather(): List<WeatherEntity> {
+): LocalDataSource {
+    override fun getWeather(): List<WeatherEntity> {
         return db.getWeatherDao().getAll()
     }
 
-    suspend fun insert(weatherLocals: List<WeatherEntity>) {
+    override suspend fun insert(weatherLocals: List<WeatherEntity>) {
         db.getWeatherDao().insertAll(weatherLocals)
     }
 
-    suspend fun clear() {
+    override suspend fun clear() {
         db.getWeatherDao().clear()
     }
 }

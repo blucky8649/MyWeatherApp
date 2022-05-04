@@ -2,7 +2,9 @@ package com.example.myweatherapp.data.repository
 
 import android.util.Log
 import com.example.myweatherapp.data.WeatherRepository
+import com.example.myweatherapp.data.source.local.LocalDataSource
 import com.example.myweatherapp.data.source.local.WeatherLocalDataSource
+import com.example.myweatherapp.data.source.remote.RemoteDataSource
 import com.example.myweatherapp.data.source.remote.WeatherRemoteDataSource
 import com.example.myweatherapp.model.WeatherLocal
 import com.example.myweatherapp.model.entity.WeatherEntity
@@ -13,8 +15,8 @@ import kotlinx.coroutines.flow.flow
 import kotlin.system.measureTimeMillis
 
 class WeatherRepositoryImpl(
-    private val weatherLocalDataSource: WeatherLocalDataSource,
-    private val weatherRemoteDataSource: WeatherRemoteDataSource
+    private val weatherLocalDataSource: LocalDataSource,
+    private val weatherRemoteDataSource: RemoteDataSource
 ) : WeatherRepository {
 
     override suspend fun observeWeatherListings(

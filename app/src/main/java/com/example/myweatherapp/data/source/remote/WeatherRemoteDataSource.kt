@@ -6,11 +6,11 @@ import retrofit2.Response
 
 class WeatherRemoteDataSource(
     private val api: WeatherApi
-) {
-    suspend fun getWeatherLocal(query: String): Response<List<WeatherLocal>> {
+) : RemoteDataSource {
+    override suspend fun getWeatherLocal(query: String): Response<List<WeatherLocal>> {
         return api.getWeatherResponse(query)
     }
-    suspend fun getWeatherDetail(woeid: Int): WeatherDetail {
+    override suspend fun getWeatherDetail(woeid: Int): WeatherDetail {
         return api.getWeatherDetail(woeid = woeid)
     }
 }
