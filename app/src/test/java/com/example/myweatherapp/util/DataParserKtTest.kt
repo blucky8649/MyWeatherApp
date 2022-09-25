@@ -1,9 +1,10 @@
 package com.example.myweatherapp.util
 
+import com.example.presentation.util.getToday
+import com.example.presentation.util.getTomorrow
 import org.junit.Assert.*
 import org.junit.Test
 import com.google.common.truth.Truth.assertThat
-import java.util.*
 
 class DataParserKtTest {
 

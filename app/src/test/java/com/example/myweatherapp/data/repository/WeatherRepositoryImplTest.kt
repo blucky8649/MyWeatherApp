@@ -1,27 +1,19 @@
 package com.example.myweatherapp.data.repository
 
-import android.util.Log
-import com.example.myweatherapp.data.WeatherRepository
-import com.example.myweatherapp.data.source.local.LocalDataSource
-import com.example.myweatherapp.data.source.local.WeatherDatabase
-import com.example.myweatherapp.data.source.local.WeatherLocalDataSource
-import com.example.myweatherapp.data.source.remote.RemoteDataSource
-import com.example.myweatherapp.data.source.remote.WeatherApi
-import com.example.myweatherapp.data.source.remote.WeatherRemoteDataSource
-import com.example.myweatherapp.model.ConsolidatedWeather
-import com.example.myweatherapp.model.WeatherDetail
-import com.example.myweatherapp.model.WeatherLocal
+import com.example.data.data.source.local.LocalDataSource
+import com.example.data.data.source.mapper.toWeather
+import com.example.data.data.source.remote.RemoteDataSource
+import com.example.data.data.source.remote.dto.ConsolidatedWeatherDto
+import com.example.data.data.source.remote.dto.WeatherDetailDto
+import com.example.data.data.source.remote.dto.WeatherDto
+import com.example.data.data.source.repository.WeatherRepositoryImpl
+import com.example.domain.repository.WeatherRepository
 import com.example.myweatherapp.model.entity.WeatherEntity
-import com.example.myweatherapp.util.Resource
 import com.google.common.truth.Truth
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 import org.mockito.*
 import org.mockito.ArgumentMatchers.*
 import retrofit2.Response
@@ -30,11 +22,11 @@ class WeatherRepositoryImplTest {
     val mockQuery = ""
 
     lateinit var localDbResult: ArrayList<WeatherEntity>
-    lateinit var repository: WeatherRepository
+    lateinit var repository: com.example.domain.repository.WeatherRepository
     lateinit var weatherInfoList: ArrayList<WeatherEntity>
-    lateinit var weatherDetailList: ArrayList<WeatherDetail>
+    lateinit var weatherDetailList: ArrayList<WeatherDetailDto>
     lateinit var weatherInfoListFromRemote: ArrayList<WeatherEntity>
-    lateinit var weatherLocalList: ArrayList<WeatherLocal>
+    lateinit var weatherLocalList: ArrayList<WeatherDto>
 
     @Mock
     lateinit var localDataSource: LocalDataSource
@@ -60,17 +52,17 @@ class WeatherRepositoryImplTest {
         )
 
         weatherDetailList = arrayListOf(
-            WeatherDetail.emptyWeatherDetail.copy(woeid = 5),
-            WeatherDetail.emptyWeatherDetail.copy(woeid = 6),
-            WeatherDetail.emptyWeatherDetail.copy(woeid = 7),
-            WeatherDetail.emptyWeatherDetail.copy(woeid = 8)
+            WeatherDetailDto.emptyWeatherDetail.copy(woeid = 5),
+            WeatherDetailDto.emptyWeatherDetail.copy(woeid = 6),
+            WeatherDetailDto.emptyWeatherDetail.copy(woeid = 7),
+            WeatherDetailDto.emptyWeatherDetail.copy(woeid = 8)
         )
 
         weatherLocalList = arrayListOf(
-            WeatherLocal("seoul", 1),
-            WeatherLocal("tokyo", 2),
-            WeatherLocal("undefined", 3),
-            WeatherLocal("gggggg", 4)
+            WeatherDto("seoul", 1),
+            WeatherDto("tokyo", 2),
+            WeatherDto("undefined", 3),
+            WeatherDto("gggggg", 4)
         )
 
         repository = WeatherRepositoryImpl(localDataSource, remoteDataSource)
@@ -82,14 +74,14 @@ class WeatherRepositoryImplTest {
                 }
             Mockito.`when`(remoteDataSource.getWeatherDetail(anyInt()))
                 .thenReturn(
-                    WeatherDetail.emptyWeatherDetail.copy(
+                    WeatherDetailDto.emptyWeatherDetail.copy(
                         consolidated_weather = listOf(
-                            ConsolidatedWeather.emptyConsolidatedWeather
+                            ConsolidatedWeatherDto.emptyConsolidatedWeather
                         )
                     )
                 )
             Mockito.`when`(localDataSource.getWeather())
-                .thenReturn(localDbResult)
+                .thenReturn(localDbResult.toList().map { it.toWeather() })
             Mockito.`when`(remoteDataSource.getWeatherLocal(mockQuery))
                 .thenReturn(Response.success(weatherLocalList))
             Mockito.`when`(localDataSource.clear()).then {

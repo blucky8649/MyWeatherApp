@@ -1,13 +1,11 @@
 package com.example.myweatherapp.data.source.local
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.runner.RunWith
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import com.example.myweatherapp.model.ConsolidatedWeather
 import com.example.myweatherapp.model.entity.WeatherEntity
 import com.google.common.truth.Truth
 import kotlinx.coroutines.runBlocking
